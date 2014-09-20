@@ -37,5 +37,3 @@ def exec_task(task):
     module = __import__(module)
     func = getattr(module, func_name)
     func.original_function(*args, **kwargs)
-
-
