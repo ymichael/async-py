@@ -17,8 +17,12 @@ def run():
         except Exception, e:
             print 'ERROR:', str(e)
 
+
 def main(args):
-    print args
+    redis_conn = red.get_redis_conn(host=args.host, port=args.port, db=args.db)
+    redis_queue = red.RedisQueue(args.queue, redis_conn)
+    # TODO.
+
 
 
 if __name__ == '__main__':

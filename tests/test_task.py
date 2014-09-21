@@ -1,4 +1,5 @@
 from async.task import *
+from async.red import BaseQueue
 from nose.tools import eq_
 
 
@@ -17,8 +18,12 @@ def baz(x, y, z=0):
     return (x, y, z)
 
 
+class TestQueue(BaseQueue):
+    pass
+
+
 def test_async_func():
-    async_foo = AsyncFunc(foo)
+    async_foo = AsyncFunc(foo, TestQueue())
 
     task_foo = async_foo.create_task(5)
     eq_(5, task_foo())
@@ -31,7 +36,7 @@ def test_async_func():
 
 
 def test_async_func_multi():
-    async_bar = AsyncFunc(bar)
+    async_bar = AsyncFunc(bar, TestQueue())
 
     task_bar = async_bar.create_task(5, 10)
     eq_((5, 10), task_bar())
@@ -44,7 +49,7 @@ def test_async_func_multi():
 
 
 def test_async_func_keyword():
-    async_baz = AsyncFunc(baz)
+    async_baz = AsyncFunc(baz, TestQueue())
 
     task_baz = async_baz.create_task(5, 10)
     eq_((5, 10, 0), task_baz())

@@ -1,6 +1,5 @@
 import os.path
 import pickle
-import red
 
 
 def get_function_module(f):
@@ -18,13 +17,23 @@ def get_function_module(f):
 
 
 class AsyncFunc(object):
-    """A wrapper around a function to make it async."""
-    def __init__(self, f):
+    """A wrapper around a function to make it async.
+
+    The basic idea is to save the 'fully qualified' module path and function
+    name as well as the pickled arguments to a queue somewhere. Worker threads
+    then pick off tasks from this queue and process them asynchronously.
+
+    When a function is decorated with @async, the function invokation now
+    requires the time taken to pickle the arguments and add the resulting
+    string to the queue.
+    """
+    def __init__(self, f, queue):
         self.original_func = f
+        self.queue = queue
 
     def __call__(self, *args, **kwargs):
         task = self.create_task(*args, **kwargs)
-        red.get_queue().add(task.serialize())
+        queue.add(task.serialize())
 
     def create_task(self, *args, **kwargs):
         return Task(self.original_func, args, kwargs)
@@ -58,17 +67,3 @@ class Task(object):
     def __call__(self):
         """Execute the task."""
         return self.original_func(*self.args, **self.kwargs)
-
-
-def async(f):
-    """Decorator to wrap a function in the AsyncFunc class.
-
-    The basic idea is to save the 'fully qualified' module path and function
-    name as well as the pickled arguments to a queue somewhere. Worker threads
-    then pick off tasks from this queue and process them asynchronously.
-
-    When a function is decorated with @async, the function invokation now
-    requires the time taken to pickle the arguments and add the resulting
-    string to the queue.
-    """
-    return AsyncFunc(f)
