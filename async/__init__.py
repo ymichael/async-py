@@ -2,8 +2,6 @@ import task
 import red
 
 
-
-
 def get_async_decorator(queue_name='', host=None, port=None, db=None):
     """Returns a decorator that when applied to functions, make them async.
 

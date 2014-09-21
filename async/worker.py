@@ -1,6 +1,6 @@
 import argparse
-import task
 import red
+import task
 import time
 
 
