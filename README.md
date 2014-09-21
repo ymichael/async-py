@@ -19,7 +19,7 @@ the arguments and add the resulting string to the queue.
 import async
 
 # Configure your redis connection and queue name etc.
-delay = get_async_decorator()
+delay = async.get_async_decorator()
 
 
 def slow_func():
