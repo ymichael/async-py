@@ -1,4 +1,5 @@
-import async
+import argparse
+import task
 import red
 import time
 
@@ -16,6 +17,25 @@ def run():
         except Exception, e:
             print 'ERROR:', str(e)
 
+def main(args):
+    print args
+
 
 if __name__ == '__main__':
-    run()
+    parser = argparse.ArgumentParser(description='async-py task worker')
+
+    # Worker configuration
+    worker_config = parser.add_argument_group('Worker configuration')
+    worker_config.add_argument('-q', '--queue', required=True,
+        help='The async-py task queue to pull tasks from.')
+
+    # Redis connection information.
+    redis_information = parser.add_argument_group('Redis connection information')
+    redis_information.add_argument(
+        '-r', '--host', default='localhost', help='Redis host.')
+    redis_information.add_argument(
+            '-p', '--port', default=6379, help='Redis port.')
+    redis_information.add_argument('-d', '--db', default=0, help='Redis db.')
+
+    args = parser.parse_args()
+    main(args)
